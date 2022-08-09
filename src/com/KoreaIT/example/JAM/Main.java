@@ -46,6 +46,16 @@ public class Main {
 				for(Article article : theArticles) {
 					System.out.printf("  %d  |  %s\n", article.id, article.title);
 				}
+			} else if(cmd.startsWith("article modify")) {
+				int id = Integer.parseInt(cmd.split(" ")[2]);
+
+				System.out.printf("== %d번 게시물 수정 ==\n", id);
+				System.out.printf("제목 : ");
+				String newTitle = sc.nextLine();
+				System.out.printf("내용 : ");
+				String newBody = sc.nextLine();
+				
+				modifyDBMS(newTitle, newBody, id);
 			}
 		}
 		
@@ -160,5 +170,56 @@ public class Main {
 		}
 		
 		return articles;
+	}
+	
+	public static void modifyDBMS(String newTitle, String newBody, int id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			String url = "jdbc:mysql://127.0.0.1:3306/article_manager?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull";
+
+			conn = DriverManager.getConnection(url, "root", "");
+			System.out.println("연결 성공!");
+			
+			String sql = "UPDATE article ";
+			sql += "SET title = CONCAT('" + newTitle + "'), ";
+			sql += "`body` = CONCAT('" + newBody + "'), ";
+			sql += "updateDate = NOW() ";
+			sql += "WHERE id = " + id;
+			
+//			System.out.println(sql);
+			pstmt = conn.prepareStatement(sql);
+			pstmt.executeUpdate();
+
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로딩 실패");
+		} catch (SQLException e) {
+			System.out.println("에러: " + e);
+		} finally {
+			try {
+				if (rs != null && !rs.isClosed()) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if (pstmt != null && !pstmt.isClosed()) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
