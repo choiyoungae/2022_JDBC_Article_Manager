@@ -51,8 +51,8 @@ public class Main {
 			String sql = "INSERT INTO article ";
 			sql += "SET regDate = NOW()";
 			sql += ", updateDate = NOW()";
-			sql += ", title = " + title;
-			sql += ", `body` = " + body;
+			sql += ", title = CONCAT('" + title + "')";
+			sql += ", `body` = CONCAT('" + body + "')";
 			
 			System.out.println(sql);
 			pstmt = conn.prepareStatement(sql);
