@@ -17,11 +17,8 @@ public class JDBCDeleteTEST {
 			conn = DriverManager.getConnection(url, "root", "");
 			System.out.println("연결 성공!");
 			
-			String sql = "INSERT INTO article ";
-			sql += "SET regDate = NOW()";
-			sql += ", updateDate = NOW()";
-			sql += ", title = CONCAT('제목',RAND())";
-			sql += ", `body` = CONCAT('내용',RAND())";
+			String sql = "DELETE FROM article ";
+			sql += "WHERE id = 6";
 			
 			System.out.println(sql);
 			pstmt = conn.prepareStatement(sql);
