@@ -173,6 +173,25 @@ public class DBUtil {
 	}
 
 	public static int delete(Connection dbConn, SecSql sql) {
-		return update(dbConn, sql);
+		int affectedRows = 0;
+
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = sql.getPreparedStatement(dbConn);
+			affectedRows = stmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new SQLErrorException("SQL 예외, SQL : " + sql, e);
+		} finally {
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					throw new SQLErrorException("SQL 예외, stmt 닫기, SQL : " + sql, e);
+				}
+			}
+		}
+		
+		return affectedRows;
 	}
 }
