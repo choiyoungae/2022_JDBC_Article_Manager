@@ -79,11 +79,8 @@ public class App {
 			PreparedStatement pstmt = null;
 
 			try {
-				String sql = "INSERT INTO article ";
-				sql += "SET regDate = NOW()";
-				sql += ", updateDate = NOW()";
-				sql += ", title = CONCAT('" + title + "')";
-				sql += ", `body` = CONCAT('" + body + "')";
+				String sql = "DELETE FROM article ";
+				sql += "WHERE id = 6";
 				
 				pstmt = conn.prepareStatement(sql);
 				
