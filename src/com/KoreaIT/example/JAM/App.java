@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.KoreaIT.example.JAM.controller.MemberController;
 import com.KoreaIT.example.JAM.util.DBUtil;
 import com.KoreaIT.example.JAM.util.SecSql;
 
@@ -65,6 +66,11 @@ public class App {
 	}
 	
 	private int doAction(Connection conn, Scanner sc, String cmd) {
+		
+		MemberController memberController = new MemberController();
+		memberController.setConn(conn);
+		memberController.setSc(sc);
+		
 		if(cmd.equals("exit")) {
 			System.out.println("프로그램을 종료합니다.");
 			return -1;
@@ -187,6 +193,12 @@ public class App {
 			System.out.printf("수정날짜 : %s\n", article.updateDate);
 			System.out.printf("제목 : %s\n", article.title);
 			System.out.printf("내용 : %s\n", article.body);
+			
+		} else if(cmd.equals("member join")) {
+			memberController.doJoin(cmd);
+			
+		} else {
+			System.out.println("존재하지 않는 명령어입니다.");
 		}
 		
 		return 0;
