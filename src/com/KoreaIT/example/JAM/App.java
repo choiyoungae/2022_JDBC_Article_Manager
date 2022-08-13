@@ -68,13 +68,8 @@ public class App {
 	
 	private int doAction(Connection conn, Scanner sc, String cmd) {
 		
-		MemberController memberController = new MemberController();
-		memberController.setConn(conn);
-		memberController.setSc(sc);
-		
-		ArticleController articleController = new ArticleController();
-		articleController.setConn(conn);
-		articleController.setSc(sc);
+		MemberController memberController = new MemberController(conn, sc);
+		ArticleController articleController = new ArticleController(conn, sc);
 		
 		if(cmd.equals("exit")) {
 			System.out.println("프로그램을 종료합니다.");

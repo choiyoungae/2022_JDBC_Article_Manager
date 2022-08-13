@@ -7,19 +7,15 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.KoreaIT.example.JAM.Article;
-import com.KoreaIT.example.JAM.util.DBUtil;
-import com.KoreaIT.example.JAM.util.SecSql;
+import com.KoreaIT.example.JAM.service.ArticleService;
 
-public class ArticleController {
-	private Connection conn;
-	private Scanner sc;
+public class ArticleController extends Controller {
 
-	public void setConn(Connection conn) {
-		this.conn = conn;
-	}
-
-	public void setSc(Scanner sc) {
-		this.sc = sc;
+	private ArticleService articleService;
+	
+	public ArticleController(Connection conn, Scanner sc) {
+		super(sc);
+		articleService = new ArticleService(conn);
 	}
 
 	public void doWrite() {
@@ -28,16 +24,8 @@ public class ArticleController {
 		String title = sc.nextLine();
 		System.out.printf("내용 : ");
 		String body = sc.nextLine();
-		
-		SecSql sql = new SecSql();
-		
-		sql.append("INSERT INTO article ");
-		sql.append("SET regDate = NOW(), ");
-		sql.append("updateDate = NOW(), ");
-		sql.append("title = ?, ", title);
-		sql.append("`body` = ?", body);
-		
-		int id = DBUtil.insert(conn, sql);
+				
+		int id = articleService.doWrite(title, body);
 
 		System.out.printf("%d번 글이 작성되었습니다.\n", id);
 	}
@@ -46,14 +34,8 @@ public class ArticleController {
 		System.out.println("== 게시글 리스트 ==");
 		
 		List<Article> articles = new ArrayList<>();
-		
-		SecSql sql = new SecSql();
-		
-		sql.append("SELECT * ");
-		sql.append("FROM article ");
-		sql.append("ORDER BY id DESC");
-		
-		List<Map<String, Object>> articlesListMap = DBUtil.selectRows(conn, sql);
+
+		List<Map<String, Object>> articlesListMap = articleService.showList();
 		
 		for(Map<String, Object> articleMap : articlesListMap) {
 			articles.add(new Article(articleMap));
@@ -79,52 +61,30 @@ public class ArticleController {
 		System.out.printf("내용 : ");
 		String newBody = sc.nextLine();
 		
-		SecSql sql = new SecSql();
-
-		sql.append("UPDATE article");
-		sql.append(" SET updateDate = NOW(), ");
-		sql.append("title = ?, ", newTitle);
-		sql.append("`body` = ?", newBody);
-		sql.append(" WHERE id = ?", id);
-
-		DBUtil.update(conn, sql);
-		
+		articleService.doModify(id, newTitle, newBody);
+				
 		System.out.printf("%d번 글이 수정되었습니다.\n", id);
 	}
 
 	public void doDelete(String cmd) {
 		int id = Integer.parseInt(cmd.split(" ")[2]);
 		
-		SecSql sql = new SecSql();
-		sql.append("SELECT COUNT(*) FROM article ");
-		sql.append("WHERE id = ?", id);
-		
-		int articlesCount = DBUtil.selectRowIntValue(conn, sql);
+		int articlesCount = articleService.searchArticleCount(id);
 		
 		if(articlesCount == 0) {
 			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
 			return;
 		}
 
-		sql = new SecSql();
-		sql.append("DELETE FROM article ");
-		sql.append("WHERE id = ?", id);
-		
-		
-		DBUtil.delete(conn, sql);
+		articleService.doDelete(id);
 		
 		System.out.printf("%d번 글이 삭제되었습니다.\n", id);
 	}
 
 	public void showDetail(String cmd) {
 		int id = Integer.parseInt(cmd.split(" ")[2]);
-
-		SecSql sql = new SecSql();
-
-		sql.append("SELECT * FROM article ");
-		sql.append("WHERE id = ?", id);
 		
-		Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
+		Map<String, Object> articleMap = articleService.searchArticle(id);;
 		
 		if (articleMap.isEmpty()) {
 			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
