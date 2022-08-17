@@ -1,18 +1,15 @@
 package com.KoreaIT.example.JAM.dao;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
+import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.util.DBUtil;
 import com.KoreaIT.example.JAM.util.SecSql;
 
 public class ArticleDao {
-	
-	private Connection conn;
 
-	public ArticleDao(Connection conn) {
-		this.conn = conn;
+	public ArticleDao() {
 	}
 
 	public int doWrite(String title, String body) {
@@ -25,7 +22,7 @@ public class ArticleDao {
 		sql.append("title = ?, ", title);
 		sql.append("`body` = ?", body);
 		
-		int id = DBUtil.insert(conn, sql);
+		int id = DBUtil.insert(Container.conn, sql);
 		
 		return id;
 	}
@@ -40,7 +37,7 @@ public class ArticleDao {
 		sql.append("`body` = ?", newBody);
 		sql.append(" WHERE id = ?", id);
 
-		DBUtil.update(conn, sql);
+		DBUtil.update(Container.conn, sql);
 
 	}
 
@@ -49,7 +46,7 @@ public class ArticleDao {
 		sql.append("SELECT COUNT(*) FROM article ");
 		sql.append("WHERE id = ?", id);
 		
-		int articlesCount = DBUtil.selectRowIntValue(conn, sql);
+		int articlesCount = DBUtil.selectRowIntValue(Container.conn, sql);
 		
 		return articlesCount;
 	}
@@ -59,7 +56,7 @@ public class ArticleDao {
 		sql.append("DELETE FROM article ");
 		sql.append("WHERE id = ?", id);
 		
-		DBUtil.delete(conn, sql);
+		DBUtil.delete(Container.conn, sql);
 	}
 
 	public Map<String, Object> searchArticle(int id) {
@@ -68,7 +65,7 @@ public class ArticleDao {
 		sql.append("SELECT * FROM article ");
 		sql.append("WHERE id = ?", id);
 		
-		return DBUtil.selectRow(conn, sql);
+		return DBUtil.selectRow(Container.conn, sql);
 	}
 
 	public List<Map<String, Object>> showList() {
@@ -78,7 +75,7 @@ public class ArticleDao {
 		sql.append("FROM article ");
 		sql.append("ORDER BY id DESC");
 		
-		return DBUtil.selectRows(conn, sql);
+		return DBUtil.selectRows(Container.conn, sql);
 	}
 	
 	

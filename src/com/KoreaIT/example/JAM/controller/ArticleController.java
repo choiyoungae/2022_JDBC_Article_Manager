@@ -1,21 +1,19 @@
 package com.KoreaIT.example.JAM.controller;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import com.KoreaIT.example.JAM.Article;
+import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.service.ArticleService;
 
 public class ArticleController extends Controller {
 
 	private ArticleService articleService;
 	
-	public ArticleController(Connection conn, Scanner sc) {
-		super(sc);
-		articleService = new ArticleService(conn);
+	public ArticleController() {
+		articleService = Container.articleService;
 	}
 
 	public void doWrite() {
@@ -46,9 +44,9 @@ public class ArticleController extends Controller {
 			return;
 		}
 		
-		System.out.println("  번호  |  제목  ");
+		System.out.println("  번호  |   제목   |  작성자");
 		for(Article article : articles) {
-			System.out.printf("  %d  |  %s\n", article.id, article.title);
+			System.out.printf("  %3d  |  %5s  | %3s\n", article.id, article.title, article.writer);
 		}
 	}
 

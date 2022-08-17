@@ -1,18 +1,15 @@
 package com.KoreaIT.example.JAM.controller;
 
-import java.sql.Connection;
-import java.util.Scanner;
-
 import com.KoreaIT.example.JAM.Member;
+import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.service.MemberService;
 
 public class MemberController extends Controller {
 	
 	private MemberService memberService;
 	
-	public MemberController(Connection conn, Scanner sc) {
-		super(sc);
-		memberService = new MemberService(conn);
+	public MemberController() {
+		memberService = Container.memberService;
 	}
 	
 	public void doJoin() {
@@ -75,12 +72,17 @@ public class MemberController extends Controller {
 			break;
 		}
 		
-		int id = memberService.doJoin(loginId, loginPw, name);
+		memberService.doJoin(loginId, loginPw, name);
 		
 		System.out.printf("%s님 반갑습니다.\n", name);
 	}
 
 	public void doLogin() {
+		if(Container.session.getMember() != null) {
+			System.out.println("이미 로그인 상태입니다.");
+			return;
+		}
+		
 		System.out.println("== 로그인 ==");
 		System.out.printf("아이디 : ");
 		String loginId = sc.nextLine();
@@ -99,33 +101,32 @@ public class MemberController extends Controller {
 			System.out.println("비밀번호가 틀렸습니다.");
 		} else {
 			System.out.printf("%s님 반갑습니다.\n", member.name);
+			Container.session.setMember(member);
 		}
 		
-//		선생님 방식
-//		Member member = memberService.getMemberByLoginId(loginId);
-//		
-//		int tryMaxCount = 3;
-//		int tryCount = 0;
-//		
-//		while(true) {
-//			if(tryCount >= tryMaxCount) {
-//				System.out.println("비밀번호를 확인하고 다시 시도해주세요.");
-//				break;
-//			}
-//			
-//			System.out.printf("비밀번호 : ");
-//			String loginPw = sc.nextLine();
-//			
-//			if(loginPw.equals(member.loginPw)) {
-//				System.out.printf("%s님 반갑습니다.\n", member.name);
-//				break;
-//				
-//			} else {
-//				System.out.println("비밀번호가 일치하지 않습니다.");
-//				tryCount++;
-//			}
-//			
-//		}
+	}
+
+	public void showProfile() {
+		Member member = Container.session.getMember();
+		if(member == null) {
+			System.out.println("로그인이 필요한 기능입니다.");
+			return;
+		}
+		
+		System.out.println("== 내 프로필 ==");
+		System.out.printf("아이디 : %s\n",member.loginId);
+		System.out.printf("이름 : %s\n",member.name);
+		System.out.printf("가입일시 : %s\n",member.regDate);
+	}
+
+	public void doLogout() {
+		if(Container.session.getMember() == null) {
+			System.out.println("로그인이 필요한 기능입니다.");
+			return;
+		}
+		
+		Container.session.setMember(null);
+		System.out.println("로그아웃 되셨습니다.");
 	}
 
 }

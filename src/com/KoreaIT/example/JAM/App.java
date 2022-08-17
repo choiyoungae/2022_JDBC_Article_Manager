@@ -2,27 +2,22 @@ package com.KoreaIT.example.JAM;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
+import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.controller.ArticleController;
 import com.KoreaIT.example.JAM.controller.MemberController;
-import com.KoreaIT.example.JAM.util.DBUtil;
-import com.KoreaIT.example.JAM.util.SecSql;
 
 public class App {
 	public void run() {
-		Scanner sc = new Scanner(System.in);
+		Container.sc = new Scanner(System.in);
 		
+		Container.init();
 		
 		while(true) {
 			System.out.printf("명령어) ");
-			String cmd = sc.nextLine().trim();
+			String cmd = Container.sc.nextLine().trim();
 			
 			// DB 연결
 			Connection conn = null;
@@ -41,8 +36,9 @@ public class App {
 
 			try {
 				conn = DriverManager.getConnection(url, "root", "");
+				Container.conn = conn;
 				
-				int actionResult = doAction(conn, sc, cmd);
+				int actionResult = action(cmd);
 				
 				if(actionResult == -1) {
 					break;
@@ -66,10 +62,10 @@ public class App {
 		
 	}
 	
-	private int doAction(Connection conn, Scanner sc, String cmd) {
+	private int action(String cmd) {
 		
-		MemberController memberController = new MemberController(conn, sc);
-		ArticleController articleController = new ArticleController(conn, sc);
+		MemberController memberController = Container.memberController;
+		ArticleController articleController = Container.articleController;
 		
 		if(cmd.equals("exit")) {
 			System.out.println("프로그램을 종료합니다.");
@@ -97,7 +93,13 @@ public class App {
 		} else if(cmd.equals("member login")) {
 			memberController.doLogin();
 			
-		} else {
+		} else if(cmd.equals("member profile")) {
+			memberController.showProfile();
+			
+		} else if(cmd.equals("member logout")) {
+			memberController.doLogout();
+		}
+		else {
 			System.out.println("존재하지 않는 명령어입니다.");
 		}
 		
