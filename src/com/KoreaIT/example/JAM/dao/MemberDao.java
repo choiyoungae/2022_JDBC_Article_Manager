@@ -1,7 +1,9 @@
 package com.KoreaIT.example.JAM.dao;
 
 import java.sql.Connection;
+import java.util.Map;
 
+import com.KoreaIT.example.JAM.Member;
 import com.KoreaIT.example.JAM.util.DBUtil;
 import com.KoreaIT.example.JAM.util.SecSql;
 
@@ -34,6 +36,37 @@ public class MemberDao {
 		int id = DBUtil.insert(conn, sql);
 		
 		return id;
+	}
+
+	public Member doLogin(String loginId, String loginPw) {
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT * FROM `member` ");
+		sql.append("WHERE loginId = ? ", loginId);
+		sql.append("AND loginPw = ?", loginPw);
+		
+		Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
+		
+		if(memberMap.isEmpty()) {
+			return null;
+		}
+		
+		return new Member(memberMap);
+	}
+
+	public Member getMemberByLoginId(String loginId) {
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT * FROM `member` ");
+		sql.append("WHERE loginId = ? ", loginId);
+		
+		Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
+		
+		if(memberMap.isEmpty()) {
+			return null;
+		}
+		
+		return new Member(memberMap);
 	}
 }
 

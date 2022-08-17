@@ -3,6 +3,7 @@ package com.KoreaIT.example.JAM.controller;
 import java.sql.Connection;
 import java.util.Scanner;
 
+import com.KoreaIT.example.JAM.Member;
 import com.KoreaIT.example.JAM.service.MemberService;
 
 public class MemberController extends Controller {
@@ -14,7 +15,7 @@ public class MemberController extends Controller {
 		memberService = new MemberService(conn);
 	}
 	
-	public void doJoin(String cmd) {
+	public void doJoin() {
 		
 		System.out.println("== 회원가입 ==");
 		
@@ -77,6 +78,54 @@ public class MemberController extends Controller {
 		int id = memberService.doJoin(loginId, loginPw, name);
 		
 		System.out.printf("%s님 반갑습니다.\n", name);
+	}
+
+	public void doLogin() {
+		System.out.println("== 로그인 ==");
+		System.out.printf("아이디 : ");
+		String loginId = sc.nextLine();
+		System.out.printf("비밀번호 : ");
+		String loginPw = sc.nextLine();
+		
+		Member member = memberService.doLogin(loginId, loginPw);
+		boolean isLoginIdDup = memberService.isLoginIdDup(loginId);
+
+		if(isLoginIdDup == false) {
+			System.out.println("존재하지 않는 아이디입니다.");
+			return;
+		}
+		
+		if(member == null) {
+			System.out.println("비밀번호가 틀렸습니다.");
+		} else {
+			System.out.printf("%s님 반갑습니다.\n", member.name);
+		}
+		
+//		선생님 방식
+//		Member member = memberService.getMemberByLoginId(loginId);
+//		
+//		int tryMaxCount = 3;
+//		int tryCount = 0;
+//		
+//		while(true) {
+//			if(tryCount >= tryMaxCount) {
+//				System.out.println("비밀번호를 확인하고 다시 시도해주세요.");
+//				break;
+//			}
+//			
+//			System.out.printf("비밀번호 : ");
+//			String loginPw = sc.nextLine();
+//			
+//			if(loginPw.equals(member.loginPw)) {
+//				System.out.printf("%s님 반갑습니다.\n", member.name);
+//				break;
+//				
+//			} else {
+//				System.out.println("비밀번호가 일치하지 않습니다.");
+//				tryCount++;
+//			}
+//			
+//		}
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.KoreaIT.example.JAM;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public class Member {
 	public int id;
@@ -21,6 +22,13 @@ public class Member {
 		this.updateDate = updateDate;
 	}
 	
-	
+	public Member(Map<String, Object> memberMap) {
+		this.id = (int)memberMap.get("id");
+		this.name = (String)memberMap.get("name");
+		this.loginId = (String)memberMap.get("loginId");
+		this.loginPw = (String)memberMap.get("loginPw");
+		this.regDate = (LocalDateTime)memberMap.get("regDate");
+		this.updateDate = (LocalDateTime)memberMap.get("updateDate");
+	}
 	
 }
