@@ -3,6 +3,7 @@ package com.KoreaIT.example.JAM.service;
 import java.util.List;
 import java.util.Map;
 
+import com.KoreaIT.example.JAM.Article;
 import com.KoreaIT.example.JAM.Member;
 import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.dao.ArticleDao;
@@ -34,10 +35,6 @@ public class ArticleService {
 		
 	}
 
-	public Map<String, Object> searchArticle(int id) {
-		return articleDao.searchArticle(id);
-	}
-
 	public List<Map<String, Object>> showList() {
 		return articleDao.showList();
 	}
@@ -48,5 +45,13 @@ public class ArticleService {
 
 	public int getWriterIdByArticleId(int id) {
 		return articleDao.getWriterIdByArticleId(id);
+	}
+
+	public List<Article> getArticles() {
+		return articleDao.getArticles();
+	}
+
+	public Article getArticleByArticleId(int id) {
+		return articleDao.getArticleByArticleId(id);
 	}
 }
