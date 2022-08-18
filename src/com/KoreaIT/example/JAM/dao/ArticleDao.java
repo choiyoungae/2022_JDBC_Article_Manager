@@ -3,6 +3,7 @@ package com.KoreaIT.example.JAM.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.KoreaIT.example.JAM.Member;
 import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.util.DBUtil;
 import com.KoreaIT.example.JAM.util.SecSql;
@@ -12,7 +13,7 @@ public class ArticleDao {
 	public ArticleDao() {
 	}
 
-	public int doWrite(String title, String body, String name) {
+	public int doWrite(String title, String body, int writerId) {
 
 		SecSql sql = new SecSql();
 		
@@ -21,7 +22,7 @@ public class ArticleDao {
 		sql.append("updateDate = NOW(), ");
 		sql.append("title = ?, ", title);
 		sql.append("`body` = ?, ", body);
-		sql.append("writer = ?", name);
+		sql.append("writerId = ?", writerId);
 		
 		int id = DBUtil.insert(Container.conn, sql);
 		
@@ -77,6 +78,28 @@ public class ArticleDao {
 		sql.append("ORDER BY id DESC");
 		
 		return DBUtil.selectRows(Container.conn, sql);
+	}
+
+	public Member getMemberByWriterId(int writerId) {
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT * ");
+		sql.append("FROM `member` ");
+		sql.append("WHERE id = ?", writerId);
+		
+		Map<String, Object> memberMap = DBUtil.selectRow(Container.conn, sql);
+		
+		return new Member(memberMap);
+	}
+
+	public int getWriterIdByArticleId(int id) {
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT writerId ");
+		sql.append("FROM article ");
+		sql.append("WHERE id = ?", id);
+		
+		return DBUtil.selectRowIntValue(Container.conn, sql);
 	}
 	
 	

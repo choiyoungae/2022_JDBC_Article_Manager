@@ -10,15 +10,15 @@ public class Article extends Object {
 	public LocalDateTime updateDate;
 	public String title;
 	public String body;
-	public String writer;
+	public int writerId;
 	
-	public Article(int id, LocalDateTime regDate, LocalDateTime updateDate, String title, String body, String writer) {
+	public Article(int id, LocalDateTime regDate, LocalDateTime updateDate, String title, String body, int writerId) {
 		this.id = id;
 		this.regDate = regDate;
 		this.updateDate = updateDate;
 		this.title = title;
 		this.body = body;
-		this.writer = writer;
+		this.writerId = writerId;
 	}
 
 	public Article(Map<String, Object> articleMap) {
@@ -27,7 +27,7 @@ public class Article extends Object {
 		this.body = (String)articleMap.get("body");
 		this.regDate = (LocalDateTime)articleMap.get("regDate");
 		this.updateDate = (LocalDateTime)articleMap.get("updateDate");
-		this.writer = (String)articleMap.get("writer");
+		this.writerId = (int)articleMap.get("writerId");
 	}
 
 	@Override

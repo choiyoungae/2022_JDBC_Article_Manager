@@ -3,6 +3,7 @@ package com.KoreaIT.example.JAM.service;
 import java.util.List;
 import java.util.Map;
 
+import com.KoreaIT.example.JAM.Member;
 import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.dao.ArticleDao;
 
@@ -13,8 +14,8 @@ public class ArticleService {
 		articleDao = Container.articleDao;
 	}
 
-	public int doWrite(String title, String body, String name) {
-		int id = articleDao.doWrite(title, body, name);
+	public int doWrite(String title, String body, int writerId) {
+		int id = articleDao.doWrite(title, body, writerId);
 		return id;
 	}
 
@@ -39,5 +40,13 @@ public class ArticleService {
 
 	public List<Map<String, Object>> showList() {
 		return articleDao.showList();
+	}
+
+	public Member getMemberByWriterId(int writerId) {
+		return articleDao.getMemberByWriterId(writerId);
+	}
+
+	public int getWriterIdByArticleId(int id) {
+		return articleDao.getWriterIdByArticleId(id);
 	}
 }

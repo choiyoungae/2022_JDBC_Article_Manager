@@ -30,9 +30,9 @@ public class ArticleController extends Controller {
 		System.out.printf("내용 : ");
 		String body = sc.nextLine();
 				
-		Member writer = Container.session.getMember();
+		int writerId = Container.session.loginedMemberId;
 
-		int id = articleService.doWrite(title, body, writer.name);
+		int id = articleService.doWrite(title, body, writerId);
 
 		System.out.printf("%d번 글이 작성되었습니다.\n", id);
 	}
@@ -55,7 +55,8 @@ public class ArticleController extends Controller {
 		
 		System.out.println("  번호  |     제목     |  작성자");
 		for(Article article : articles) {
-			System.out.printf("  %3d  |  %9s  | %3s\n", article.id, article.title, article.writer);
+			Member writer = articleService.getMemberByWriterId(article.writerId);
+			System.out.printf("  %3d  |  %9s  | %3s\n", article.id, article.title, writer.name);
 		}
 	}
 
@@ -67,6 +68,11 @@ public class ArticleController extends Controller {
 		}
 		
 		int id = Integer.parseInt(cmd.split(" ")[2]);
+		
+		if(articleService.getWriterIdByArticleId(id) != Container.session.loginedMemberId) {
+			System.out.println("본인이 작성한 게시글만 수정이 가능합니다.");
+			return;
+		}
 
 		System.out.printf("== %d번 게시물 수정 ==\n", id);
 		System.out.printf("제목 : ");
@@ -113,8 +119,10 @@ public class ArticleController extends Controller {
 		System.out.printf("== %d번 게시물 상세보기 ==\n", id);
 		
 		Article article = new Article(articleMap);
+		Member writer = articleService.getMemberByWriterId(article.writerId);
 		
 		System.out.printf("번호 : %d\n", article.id);
+		System.out.printf("작성자 : %s\n", writer.name);
 		System.out.printf("작성날짜 : %s\n", article.regDate);
 		System.out.printf("수정날짜 : %s\n", article.updateDate);
 		System.out.printf("제목 : %s\n", article.title);

@@ -3,23 +3,25 @@ package com.KoreaIT.example.JAM.session;
 import com.KoreaIT.example.JAM.Member;
 
 public class Session {
-	private Member member;
+	public int loginedMemberId;
+	public Member loginedMember;
 
-	public Member getMember() {
-		return member;
+	public Session() {
+		loginedMemberId = -1;
 	}
 
-	public void setMember(Member member) {
-		this.member = member;
-	}
-	
 	public boolean isLogined() {
-		if(member != null) {
-			return true;
-		}
-		
-		return false;
+		return loginedMemberId != -1;
 	}
-	
+
+	public void logout() {
+		loginedMember = null;
+		loginedMemberId = -1;
+	}
+
+	public void login(Member member) {
+		loginedMember = member;
+		loginedMemberId = member.id;
+	}
 	
 }
