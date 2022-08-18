@@ -78,7 +78,7 @@ public class MemberController extends Controller {
 	}
 
 	public void doLogin() {
-		if(Container.session.getMember() != null) {
+		if(Container.session.isLogined() == true) {
 			System.out.println("이미 로그인 상태입니다.");
 			return;
 		}
@@ -99,6 +99,7 @@ public class MemberController extends Controller {
 		
 		if(member == null) {
 			System.out.println("비밀번호가 틀렸습니다.");
+			
 		} else {
 			System.out.printf("%s님 반갑습니다.\n", member.name);
 			Container.session.setMember(member);
@@ -107,12 +108,14 @@ public class MemberController extends Controller {
 	}
 
 	public void showProfile() {
-		Member member = Container.session.getMember();
-		if(member == null) {
+		
+		if(Container.session.isLogined() == false) {
 			System.out.println("로그인이 필요한 기능입니다.");
 			return;
 		}
 		
+		Member member = Container.session.getMember();
+
 		System.out.println("== 내 프로필 ==");
 		System.out.printf("아이디 : %s\n",member.loginId);
 		System.out.printf("이름 : %s\n",member.name);
@@ -120,7 +123,7 @@ public class MemberController extends Controller {
 	}
 
 	public void doLogout() {
-		if(Container.session.getMember() == null) {
+		if(Container.session.isLogined() == false) {
 			System.out.println("로그인이 필요한 기능입니다.");
 			return;
 		}

@@ -12,7 +12,7 @@ public class ArticleDao {
 	public ArticleDao() {
 	}
 
-	public int doWrite(String title, String body) {
+	public int doWrite(String title, String body, String name) {
 
 		SecSql sql = new SecSql();
 		
@@ -20,7 +20,8 @@ public class ArticleDao {
 		sql.append("SET regDate = NOW(), ");
 		sql.append("updateDate = NOW(), ");
 		sql.append("title = ?, ", title);
-		sql.append("`body` = ?", body);
+		sql.append("`body` = ?, ", body);
+		sql.append("writer = ?", name);
 		
 		int id = DBUtil.insert(Container.conn, sql);
 		

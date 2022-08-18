@@ -13,5 +13,13 @@ public class Session {
 		this.member = member;
 	}
 	
+	public boolean isLogined() {
+		if(member != null) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	
 }

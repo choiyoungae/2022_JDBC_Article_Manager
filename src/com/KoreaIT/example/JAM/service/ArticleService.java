@@ -13,8 +13,8 @@ public class ArticleService {
 		articleDao = Container.articleDao;
 	}
 
-	public int doWrite(String title, String body) {
-		int id = articleDao.doWrite(title, body);
+	public int doWrite(String title, String body, String name) {
+		int id = articleDao.doWrite(title, body, name);
 		return id;
 	}
 
