@@ -140,4 +140,32 @@ public class ArticleDao {
 		return new Article(articleMap);
 	}
 	
+	public void increaseHit(int id) {
+		SecSql sql = new SecSql();
+		
+		sql.append("UPDATE article ");
+		sql.append("SET hit = hit + 1 ");
+		sql.append("WHERE id = ?", id);
+		
+		DBUtil.update(Container.conn, sql);
+	}
+
+	public List<Article> getArticlesWithSearchKeyword(String searchKeyword) {
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT A.*, M.name AS writer ");
+		sql.append("FROM article AS A ");
+		sql.append("INNER JOIN member AS M ");
+		sql.append("ON A.writerId = M.id ");
+		sql.append("WHERE title LIKE '%" + searchKeyword + "%' ");
+		sql.append("ORDER BY A.id DESC");
+		
+		List<Map<String, Object>> articlesListMap = DBUtil.selectRows(Container.conn, sql);
+		
+		List<Article> articles = new ArrayList<>();
+		for (Map<String, Object> articleMap : articlesListMap) {
+			articles.add(new Article(articleMap));
+		}
+		return articles;
+	}
 }

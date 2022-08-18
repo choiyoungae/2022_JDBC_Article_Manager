@@ -32,7 +32,6 @@ public class ArticleService {
 
 	public void doDelete(int id) {
 		articleDao.doDelete(id);
-		
 	}
 
 	public List<Map<String, Object>> showList() {
@@ -53,5 +52,13 @@ public class ArticleService {
 
 	public Article getArticleByArticleId(int id) {
 		return articleDao.getArticleByArticleId(id);
+	}
+
+	public void increaseHit(int id) {
+		articleDao.increaseHit(id);
+	}
+
+	public List<Article> getArticlesWithSearchKeyword(String searchKeyword) {
+		return articleDao.getArticlesWithSearchKeyword(searchKeyword);
 	}
 }

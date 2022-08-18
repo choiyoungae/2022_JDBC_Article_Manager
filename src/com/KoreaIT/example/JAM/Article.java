@@ -12,6 +12,7 @@ public class Article extends Object {
 	public String body;
 	public int writerId;
 	public String writer;
+	public int hit;
 	
 	public Article(Map<String, Object> articleMap) {
 		this.id = (int)articleMap.get("id");
@@ -23,6 +24,10 @@ public class Article extends Object {
 		
 		if (articleMap.get("writer") != null) {
 			this.writer = (String)articleMap.get("writer");
+		}
+		
+		if (articleMap.get("hit") != null) {
+			this.hit = (int)articleMap.get("hit");
 		}
 	}
 

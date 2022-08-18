@@ -34,20 +34,39 @@ public class ArticleController extends Controller {
 		System.out.printf("%d번 글이 작성되었습니다.\n", id);
 	}
 
-	public void showList() {
-		System.out.println("== 게시글 리스트 ==");
+	public void showList(String cmd) {
 		
-		List<Article> articles = articleService.getArticles();
+		List<Article> articles = null;
+		
+		if (cmd.equals("article list")) {
+			
+			System.out.println("== 게시글 리스트 ==");
+			
+			articles = articleService.getArticles();
+			
+			
+		} else if(cmd.startsWith("article list ")) {
+			
+			String searchKeyword = cmd.split(" ")[2];
+			
+			System.out.printf("검색된 키워드 : %s\n", searchKeyword);
+			
+			System.out.println("== 게시글 리스트 ==");
+			
+			articles = articleService.getArticlesWithSearchKeyword(searchKeyword);
+
+		}
 		
 		if(articles.size() == 0) {
 			System.out.println("게시글이 없습니다.");
 			return;
 		}
 		
-		System.out.println("  번호  |     제목     |  작성자");
+		System.out.println("  번호  |     제목     |  작성자  |  조회수");
 		for(Article article : articles) {
-			System.out.printf("  %3d  |  %9s  | %3s\n", article.id, article.title, article.writer);
+			System.out.printf("  %3d  |  %9s  | %6s | %3d\n", article.id, article.title, article.writer, article.hit);
 		}
+		
 	}
 
 	public void doModify(String cmd) {
@@ -118,14 +137,20 @@ public class ArticleController extends Controller {
 			return;
 		}
 
+		articleService.increaseHit(id);
+		
+		article = articleService.getArticleByArticleId(id);
+
 		System.out.printf("== %d번 게시물 상세보기 ==\n", id);
 		
 		System.out.printf("번호 : %d\n", article.id);
 		System.out.printf("작성자 : %s\n", article.writer);
+		System.out.printf("조회수 : %d\n", article.hit);
 		System.out.printf("작성날짜 : %s\n", article.regDate);
 		System.out.printf("수정날짜 : %s\n", article.updateDate);
 		System.out.printf("제목 : %s\n", article.title);
 		System.out.printf("내용 : %s\n", article.body);
+		
 	}
 
 }
