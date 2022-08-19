@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.KoreaIT.example.JAM.Article;
-import com.KoreaIT.example.JAM.Member;
 import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.util.DBUtil;
 import com.KoreaIT.example.JAM.util.SecSql;
@@ -72,28 +71,6 @@ public class ArticleDao {
 		return DBUtil.selectRow(Container.conn, sql);
 	}
 
-	public List<Map<String, Object>> showList() {
-		SecSql sql = new SecSql();
-		
-		sql.append("SELECT * ");
-		sql.append("FROM article ");
-		sql.append("ORDER BY id DESC");
-		
-		return DBUtil.selectRows(Container.conn, sql);
-	}
-
-	public Member getMemberByWriterId(int writerId) {
-		SecSql sql = new SecSql();
-		
-		sql.append("SELECT * ");
-		sql.append("FROM `member` ");
-		sql.append("WHERE id = ?", writerId);
-		
-		Map<String, Object> memberMap = DBUtil.selectRow(Container.conn, sql);
-		
-		return new Member(memberMap);
-	}
-
 	public int getWriterIdByArticleId(int id) {
 		SecSql sql = new SecSql();
 		
@@ -104,24 +81,6 @@ public class ArticleDao {
 		return DBUtil.selectRowIntValue(Container.conn, sql);
 	}
 	
-	public List<Article> getArticles() {
-		SecSql sql = new SecSql();
-		
-		sql.append("SELECT A.*, M.name AS writer ");
-		sql.append("FROM article AS A ");
-		sql.append("INNER JOIN member AS M ");
-		sql.append("ON A.writerId = M.id ");
-		sql.append("ORDER BY A.id DESC");
-		
-		List<Map<String, Object>> articlesListMap = DBUtil.selectRows(Container.conn, sql);
-		
-		List<Article> articles = new ArrayList<>();
-		for (Map<String, Object> articleMap : articlesListMap) {
-			articles.add(new Article(articleMap));
-		}
-		return articles;
-	}
-
 	public Article getArticleByArticleId(int id) {
 		SecSql sql = new SecSql();
 		
@@ -150,15 +109,37 @@ public class ArticleDao {
 		DBUtil.update(Container.conn, sql);
 	}
 
-	public List<Article> getArticlesWithSearchKeyword(String searchKeyword) {
+	public List<Article> getForPrintArticles(Map<String, Object> args) {
 		SecSql sql = new SecSql();
+		
+		String searchKeyword = "";
+		
+		if(args.containsKey("searchKeyword")) {
+			searchKeyword = (String)args.get("searchKeyword");
+		}
+		
+		int limitFrom = -1;
+		int limitTake = -1;
+		
+		if(args.containsKey("limitFrom")) {
+			limitFrom = (int)args.get("limitFrom");
+		}
+		if(args.containsKey("limitTake")) {
+			limitTake = (int)args.get("limitTake");
+		}
 		
 		sql.append("SELECT A.*, M.name AS writer ");
 		sql.append("FROM article AS A ");
 		sql.append("INNER JOIN member AS M ");
 		sql.append("ON A.writerId = M.id ");
-		sql.append("WHERE title LIKE '%" + searchKeyword + "%' ");
+		if(searchKeyword.length() > 0) {
+			sql.append("WHERE A.title LIKE CONCAT('%', ?, '%')", searchKeyword);
+		}
 		sql.append("ORDER BY A.id DESC");
+		
+		if(limitFrom != -1) {
+			sql.append("LIMIT ?, ?", limitFrom, limitTake);
+		}
 		
 		List<Map<String, Object>> articlesListMap = DBUtil.selectRows(Container.conn, sql);
 		

@@ -1,10 +1,10 @@
 package com.KoreaIT.example.JAM.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.KoreaIT.example.JAM.Article;
-import com.KoreaIT.example.JAM.Member;
 import com.KoreaIT.example.JAM.container.Container;
 import com.KoreaIT.example.JAM.dao.ArticleDao;
 
@@ -34,20 +34,8 @@ public class ArticleService {
 		articleDao.doDelete(id);
 	}
 
-	public List<Map<String, Object>> showList() {
-		return articleDao.showList();
-	}
-
-	public Member getMemberByWriterId(int writerId) {
-		return articleDao.getMemberByWriterId(writerId);
-	}
-
 	public int getWriterIdByArticleId(int id) {
 		return articleDao.getWriterIdByArticleId(id);
-	}
-
-	public List<Article> getArticles() {
-		return articleDao.getArticles();
 	}
 
 	public Article getArticleByArticleId(int id) {
@@ -58,7 +46,18 @@ public class ArticleService {
 		articleDao.increaseHit(id);
 	}
 
-	public List<Article> getArticlesWithSearchKeyword(String searchKeyword) {
-		return articleDao.getArticlesWithSearchKeyword(searchKeyword);
+	public List<Article> getForPrintArticles(int page, int itemsInAPage, String searchKeyword) {
+		int limitFrom = (page - 1) * itemsInAPage;
+		int limitTake = itemsInAPage;
+		
+		// 압축 파일처럼 데이터 보내기
+		Map<String, Object> args = new HashMap<>();
+		args.put("page", page);
+		args.put("limitFrom", limitFrom);
+		args.put("limitTake", limitTake);
+		args.put("searchKeyword", searchKeyword);
+		
+		return articleDao.getForPrintArticles(args);
 	}
+	
 }

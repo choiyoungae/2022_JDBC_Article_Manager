@@ -36,26 +36,22 @@ public class ArticleController extends Controller {
 
 	public void showList(String cmd) {
 		
-		List<Article> articles = null;
+		String[] cmdBits = cmd.split(" ");
 		
-		if (cmd.equals("article list")) {
-			
-			System.out.println("== 게시글 리스트 ==");
-			
-			articles = articleService.getArticles();
-			
-			
-		} else if(cmd.startsWith("article list ")) {
-			
-			String searchKeyword = cmd.split(" ")[2];
-			
-			System.out.printf("검색된 키워드 : %s\n", searchKeyword);
-			
-			System.out.println("== 게시글 리스트 ==");
-			
-			articles = articleService.getArticlesWithSearchKeyword(searchKeyword);
-
+		int page = 1;
+		String searchKeyword = "";
+		
+		if(cmdBits.length >= 3) {
+			page = Integer.parseInt(cmdBits[2]);
 		}
+		
+		if(cmdBits.length >= 4) {
+			searchKeyword = cmdBits[3];
+		}
+		
+		int itemsInAPage = 5;
+		
+		List<Article> articles = articleService.getForPrintArticles(page, itemsInAPage, searchKeyword);
 		
 		if(articles.size() == 0) {
 			System.out.println("게시글이 없습니다.");
@@ -66,7 +62,6 @@ public class ArticleController extends Controller {
 		for(Article article : articles) {
 			System.out.printf("  %3d  |  %9s  | %6s | %3d\n", article.id, article.title, article.writer, article.hit);
 		}
-		
 	}
 
 	public void doModify(String cmd) {
