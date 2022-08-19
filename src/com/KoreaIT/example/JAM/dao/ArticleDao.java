@@ -23,7 +23,8 @@ public class ArticleDao {
 		sql.append("updateDate = NOW(), ");
 		sql.append("title = ?, ", title);
 		sql.append("`body` = ?, ", body);
-		sql.append("writerId = ?", writerId);
+		sql.append("writerId = ?, ", writerId);
+		sql.append("hit = 0");
 		
 		int id = DBUtil.insert(Container.conn, sql);
 		
